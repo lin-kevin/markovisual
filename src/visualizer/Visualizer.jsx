@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import State from './node/Node';
+import Node from './node/Node';
 
 import './Visualizer.css';
 
@@ -12,32 +12,44 @@ export default class Visualizer extends Component {
   }
 
   componentDidMount() {
-    var numRows = 11;
-    var numCols = 17;
+    const numRows = 11;
+    const numCols = 17;
+    const nodes = [];
 
-    var nodes = [];
     for (let row = 0; row < numRows; row++) {
-      var currRow = [];
+      const currRow = [];
       for (let col = 0; col < numCols; col++) {
-        var currNode = {
+        const currNode = {
           row, col,
+          isStart: row === 5 && col === 2,
+          isFinish: row === 5 && col === 14
         };
-        currRow.push([currNode]);
+        currRow.push(currNode);
       }
       nodes.push(currRow);
     }
+
     this.setState({ nodes });
   }
 
   render() {
-    var { nodes } = this.state;
+    const { nodes } = this.state;
 
     return (
       <div className="grid">
         {nodes.map((row, rowIdx) => {
-          return <div>
-            {row.map((node, nodeIx) => <State></State>)}
+          return (<div key={rowIdx}>
+            {row.map((node) => {
+              const { row, col, isStart, isFinish } = node;
+              return (
+                <Node key={(row, col)}
+                  isStart={isStart}
+                  isFinish={isFinish}>
+                </Node>
+              );
+            })}
           </div>
+          );
         })}
       </div>
     )
