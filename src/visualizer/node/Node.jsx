@@ -11,7 +11,7 @@ export default class Node extends Component {
   }
 
   setColor = (e) => {
-    const colors = ["red", "orange", "yellow"];
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
     this.setState({
       bgColor: colors[Math.floor(Math.random() * colors.length)]
     })
@@ -24,12 +24,16 @@ export default class Node extends Component {
   }
 
   render() {
-    var { isStart, isFinish } = this.props;
-    var startOrFinish = isFinish ? 'finish' : isStart ? 'start' : '';
-    return (<div className={`node ${startOrFinish}`}
+    var property = this.props.type ? "start" : "finish";
+    return (<div className={`node ${property}`}
       style={{ backgroundColor: this.state.bgColor }}
-      onMouseDown={this.setColor}
-      onMouseUp = {this.unSetColor}>
+      // onClick={this.setColor}
+      // onMouseUp={this.unSetColor}
+      onClick={() => this.props.updateLabel(this.props.row, this.props.col)}>
+      <div className = 'type'>
+        {this.props.type}
+      </div>
+      {this.props.label}
     </div>);
   }
 }

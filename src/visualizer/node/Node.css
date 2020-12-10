@@ -7,10 +7,16 @@
   display: inline-block;
 }
 
+.type {
+  text-align: center;
+}
+
 .start {
   background-color: green;
+  opacity: 0.1;
 }
 
 .finish {
   background-color: red;
+  opacity: 0.1;
 }
