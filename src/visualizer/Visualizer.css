@@ -1,4 +1,15 @@
  .grid {
    position: flex;
    margin: auto;
+   justify-content: center;
+ }
+
+ .button {
+   background-color: black;
+   text-align: center;
+   width: 90px;
+   padding: 10px;
+   border-radius: 10px;
+   margin: auto;
+   margin-bottom: 5%;
  }
