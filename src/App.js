@@ -5,7 +5,7 @@ import Visualizer from './visualizer/Visualizer';
 function App() {
   return (
     <div className="container">
-      <h1><b>MARKOV</b>ISUAL</h1>
+      <h1 className="title"><b>MARKOV</b>ISUAL</h1>
       <Visualizer></Visualizer>
     </div>
   );

@@ -9,6 +9,7 @@ export default class Visualizer extends Component {
     this.grid = [];
     this.numRows = 9;
     this.numCols = 15;
+    this.radius = 40;
     this.state = {
       nodes: [], // (row, col, label, size)
       edges: new Map()  // "row1,col1" : ["row2,col2,prob", ...]
@@ -116,7 +117,9 @@ export default class Visualizer extends Component {
   }
 
   updateLabel = (row, col) => {
+    console.log(row, col);
     var newLabel = prompt("Please enter a new label: "); // improve
+    if (newLabel === null) newLabel = "";
     this.grid[row][col] = newLabel;
     this.setState({ nodes: this.updateRender() });
   }
@@ -126,33 +129,94 @@ export default class Visualizer extends Component {
     this.setState({ nodes: this.updateRender() });
   }
 
+  /*
+    SVG experimenting 
+
+    <g>
+      <path class="edgepath" d="M 20 20 L 5 5" marker-end='url(#head)'
+        stroke-width='2'></path>
+      <text x="20" y="20" class="edgelabel" transform="rotate(30 20,40)">I love SVG</text>
+    </g>
+
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
+          markerWidth="6" markerHeight="6"
+          orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
+      <g>
+        <path
+          id='arrow-line'
+          marker-end='url(#arrow)'
+          stroke-width='1'
+          fill='none' stroke='black'
+          d='M 0 20 L 80 20'
+        />
+        <path
+          id='arrow-line'
+          marker-end='url(#arrow)'
+          stroke-width='1'
+          fill='none' stroke='black'
+          d='M 80 40 L 0 40'
+        />
+        <text x="40" y="20" class="edgelabel">
+          Testing
+        </text>
+      </g>
+    </svg>
+  */
+
   render() {
     const { nodes } = this.state;
 
-    // improve 
     return (
       <div className="grid">
         <div className="button" onClick={() => this.addEdge()}>
           ADD EDGE
         </div>
         <div className="nodes">
-          {nodes.map((row, rowIdx) => {
-            return (<div key={rowIdx}>
-              {row.map((node) => {
-                const { row, col, label } = node;
-                return (
-                  <Node key={(row, col)}
-                    row={row}
-                    col={col}
-                    label={label}
-                    grid={this.grid}
-                    updateLabel={this.updateLabel}>
-                  </Node>
-                );
-              })}
-            </div>
-            );
-          })}
+          <svg viewBox={`${-this.radius} ${-this.radius} 
+            ${2 * this.radius * (this.numCols)} 
+            ${2 * this.radius * (this.numRows)}`}
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
+                markerWidth="20" markerHeight="20"
+                orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" />
+              </marker>
+            </defs>
+
+            {nodes.map((row, rowIdx) => {
+              return (
+                <g key={rowIdx}>
+                  {row.map((node) => {
+                    const { row, col, label } = node;
+                    return (
+                      <Node key={(row, col)}
+                        row={row}
+                        col={col}
+                        radius={this.radius}
+                        label={label}
+                        grid={this.grid}
+                        updateLabel={this.updateLabel}>
+                      </Node>
+                    );
+                  })}
+                </g>
+              );
+            })}
+            <path
+              id='arrow-line'
+              marker-end='url(#arrow)'
+              stroke-width='1'
+              fill='none' stroke='black'
+              d='M 40 80 L 200 160'
+            />
+          </svg>
+
         </div>
       </div>
     )

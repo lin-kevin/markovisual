@@ -8,19 +8,34 @@
 }
 
 .type {
-  padding-top: 25%;
+  /* 
+  
   text-align: center;
+  */
+  display: block;
+  white-space: nowrap;
+  font-size: 20px;
+  fill: #aaa;
+  color: white;
+  letter-spacing: 0.2em;
 }
 
 .invalid{
-  pointer-events: none
+  pointer-events: none;
+  fill: none;
 }
 
 .blank {
+  /*
   background-color: green;
+  */
+  fill: green;
   opacity: 0.1;
 }
 
 .state {
+  /*
   background-color: red;
+  */
+  fill: red;
 }

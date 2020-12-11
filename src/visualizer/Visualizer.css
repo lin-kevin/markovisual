@@ -2,6 +2,7 @@
    position: flex;
    margin: auto;
    justify-content: center;
+   min-width: 800px;
  }
 
  .button {
@@ -13,3 +14,25 @@
    margin: auto;
    margin-bottom: 5%;
  }
+
+.edgepath {
+  stroke: #ccc;
+  fill: "transparent";
+  pointer-events: none;
+}
+
+svg {
+  display: inline;
+}
+
+.edgelabel {
+  font-size: 10px;
+  fill: #aaa;
+  color: white;
+  letter-spacing: 0.2em;
+}
+
+text {
+  text-anchor: middle;
+  pointer-events: none;
+}

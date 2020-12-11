@@ -31,9 +31,29 @@ export default class Node extends Component {
 
   render() {
     const property = this.checkNode(this.props.label);
+    const topMargin = this.props.radius/8;
+    return (<g>
+      <circle className={`node ${property}`} r={this.props.radius}
+        cx={this.props.col * this.props.radius * 2}
+        cy={this.props.row * this.props.radius * 2}
+        // style={{ backgroundColor: this.state.bgColor }}
+        // onClick={this.setColor}
+        // onMouseUp={this.unSetColor}
+        onClick={() => this.props.updateLabel(this.props.row, this.props.col)}>
+      </circle>
+      <text className='type' x={this.props.col * this.props.radius * 2}
+        y={this.props.row * this.props.radius * 2 + topMargin}>
+        {this.props.label}
+      </text>
+    </g>);
+  }
+
+  /*
+  render() {
+    const property = this.checkNode(this.props.label);
 
     return (<div className={`node ${property}`}
-      style={{ backgroundColor: this.state.bgColor }}
+      // style={{ backgroundColor: this.state.bgColor }}
       // onClick={this.setColor}
       // onMouseUp={this.unSetColor}
       onClick={() => this.props.updateLabel(this.props.row, this.props.col)}>
@@ -42,4 +62,5 @@ export default class Node extends Component {
       </div>
     </div>);
   }
+  */
 }
