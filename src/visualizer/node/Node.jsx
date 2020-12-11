@@ -23,17 +23,23 @@ export default class Node extends Component {
     })
   }
 
+  checkNode(label) {
+    if (this.props.label === null) return "invalid";
+    else if (this.props.label === "") return "blank";
+    return "state";
+  }
+
   render() {
-    var property = this.props.type ? "start" : "finish";
+    const property = this.checkNode(this.props.label);
+
     return (<div className={`node ${property}`}
       style={{ backgroundColor: this.state.bgColor }}
       // onClick={this.setColor}
       // onMouseUp={this.unSetColor}
       onClick={() => this.props.updateLabel(this.props.row, this.props.col)}>
       <div className = 'type'>
-        {this.props.type}
+        {this.props.label}
       </div>
-      {this.props.label}
     </div>);
   }
 }

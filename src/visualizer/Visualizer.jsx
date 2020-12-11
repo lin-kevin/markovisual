@@ -7,10 +7,10 @@ export default class Visualizer extends Component {
   constructor(props) {
     super(props);
     this.model = [];
-    this.numRows = 11;
-    this.numCols = 17;
+    this.numRows = 9;
+    this.numCols = 15;
     this.state = {
-      nodes: [], // (id, type, label, size)
+      nodes: [], // (row, col, label, size)
       edges: []  // (start, stop, probability)
     };
   }
@@ -20,25 +20,43 @@ export default class Visualizer extends Component {
     for (let row = 0; row < this.numRows; row++) {
       let newRow = [];
       for (let col = 0; col < this.numCols; col++) {
-        newRow.push(0);
+        newRow.push("");
       }
       newModel.push(newRow);
     }
     this.model = newModel;
   }
 
+  grayNeighbors = (row, col) => {
+    for (var dr of [-1, 0, 1]) {
+      for (var dc of [-1, 0, 1]) {
+        var newRow = row + dr
+        var newCol = col + dc
+        if (!(dr === 0 && dc === 0)
+          && newRow >= 0 && newRow < this.numRows
+          && newCol >= 0 && newCol < this.numCols) {
+          this.model[newRow][newCol] = null;
+        }
+      }
+    }
+  }
+
   updateRender() {
+    for (let row = 0; row < this.model.length; row++) {
+      for (let col = 0; col < this.model[row].length; col++) {
+        const label = this.model[row][col];
+        if (label !== null && label.length > 0) {
+          this.grayNeighbors(row, col);
+        }
+      }
+    }
+
     let newRender = []
 
     for (let row = 0; row < this.model.length; row++) {
       const currRow = [];
       for (let col = 0; col < this.model[row].length; col++) {
-        const currNode = {
-          row,
-          col,
-          label: "",
-          type: this.model[row][col]
-        };
+        const currNode = {row, col, label: this.model[row][col]};
         currRow.push(currNode);
       }
       newRender.push(currRow);
@@ -48,7 +66,8 @@ export default class Visualizer extends Component {
   }
 
   updateLabel = (row, col) => {
-    this.model[row][col] = 1;
+    var newLabel = prompt("Please enter a new label: ");
+    this.model[row][col] = newLabel;
     this.setState({ nodes: this.updateRender() });
   }
 
@@ -65,13 +84,12 @@ export default class Visualizer extends Component {
         {nodes.map((row, rowIdx) => {
           return (<div key={rowIdx}>
             {row.map((node) => {
-              const { row, col, label, type } = node;
+              const { row, col, label } = node;
               return (
                 <Node key={(row, col)}
                   row={row}
                   col={col}
                   label={label}
-                  type={type}
                   model={this.model}
                   updateLabel={this.updateLabel}>
                 </Node>

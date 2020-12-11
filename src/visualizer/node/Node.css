@@ -1,22 +1,28 @@
 .node {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin: 2px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   display: inline-block;
+  vertical-align: top;
 }
 
 .type {
+  padding-top: 25%;
   text-align: center;
 }
 
-.start {
+.null {
+  background-color: black;
+  opacity: 0.1;
+}
+
+.blank {
   background-color: green;
   opacity: 0.1;
 }
 
-.finish {
+.state {
   background-color: red;
   opacity: 0.1;
 }
