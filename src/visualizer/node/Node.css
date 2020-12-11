@@ -8,10 +8,6 @@
 }
 
 .type {
-  /* 
-  
-  text-align: center;
-  */
   display: block;
   white-space: nowrap;
   font-size: 20px;
@@ -20,22 +16,20 @@
   letter-spacing: 0.2em;
 }
 
-.invalid{
-  pointer-events: none;
-  fill: none;
+circle {
+  opacity: 0;
 }
 
-.blank {
-  /*
-  background-color: green;
-  */
-  fill: green;
+.invalid{
+  pointer-events: none;
+}
+
+circle:hover {
+  fill: #03fcec;
   opacity: 0.1;
 }
 
 .state {
-  /*
-  background-color: red;
-  */
-  fill: red;
+  fill: #fc03db;
+  opacity: 0.5;
 }

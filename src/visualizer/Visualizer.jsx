@@ -13,7 +13,8 @@ export default class Visualizer extends Component {
     this.radius = 40;
     this.state = {
       nodes: [], // (row, col, label, size)
-      edges: new Map()  // "row1,col1" : ["row2,col2,prob", ...]
+      edges: new Map(), // "row1,col1" : ["row2,col2,prob", ...]
+      labels: []
     };
   }
 
@@ -72,16 +73,8 @@ export default class Visualizer extends Component {
     this.setState({ edges: newEdges });
   }
 
-  // gray out node's neighbors, row, and col
+  // gray out node's neighbors
   grayNodes = (row, col) => {
-    for (let r = 0; r < this.grid.length; r++) {
-      for (let c = 0; c < this.grid[row].length; c++) {
-        if ((r === row || c === col) && !(r === row && c === col)) {
-          this.grid[r][c] = null;
-        }
-      }
-    }
-
     for (var dr of [-1, 0, 1]) {
       for (var dc of [-1, 0, 1]) {
         if (!(dr === 0 && dc === 0)
@@ -150,14 +143,33 @@ export default class Visualizer extends Component {
 
     return (
       <div className="grid">
-        <div className="button" onClick={() => this.addEdge()}>
-          ADD EDGE
+        <div className="topbar">
+          <div className="button">
+            DEFINITIONS
+          </div>
+          <div className="button" onClick={() => this.addEdge()}>
+            ADD EDGE
+          </div>
         </div>
         <div className="nodes">
-          <svg viewBox={`${-this.radius} ${-this.radius} 
+          <svg viewBox={`0 0
             ${2 * this.radius * (this.numCols)} 
             ${2 * this.radius * (this.numRows)}`}
             xmlns="http://www.w3.org/2000/svg">
+            {edgesList.map((edge, edgeId) => {
+              return (
+                <Edge key={{ edgeId }}
+                  row1={edge[0]}
+                  col1={edge[1]}
+                  row2={edge[2]}
+                  col2={edge[3]}
+                  prob={edge[4]}
+                  label1={this.grid[edge[0]][edge[1]]}
+                  label2={this.grid[edge[2]][edge[3]]}
+                  radius={this.radius}>
+                </Edge>
+              )
+            })}
             {nodes.map((row, rowId) => {
               return (
                 <g key={rowId}>
@@ -176,19 +188,6 @@ export default class Visualizer extends Component {
                   })}
                 </g>
               );
-            })}
-
-            {edgesList.map((edge, edgeId) => {
-              return (
-                <Edge key={{ edgeId }}
-                  row1={edge[0]}
-                  col1={edge[1]}
-                  row2={edge[2]}
-                  col2={edge[3]}
-                  prob={edge[4]}
-                  radius = {this.radius}>
-                </Edge>
-              )
             })}
           </svg>
         </div>

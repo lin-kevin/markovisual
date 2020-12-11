@@ -30,36 +30,22 @@ export default class Node extends Component {
   }
 
   render() {
-    const {row, col, radius, label, updateLabel} = this.props;
+    const { row, col, radius, label, updateLabel } = this.props;
     const property = this.checkNode(label);
-    const topMargin = radius/8;
+    const topMargin = radius / 8;
     return (<g>
       <circle className={`node ${property}`} r={radius}
-        cx={col * radius * 2} cy={row * radius * 2}
+        cx={col * radius * 2 + radius} cy={row * radius * 2 + radius}
         // style={{ backgroundColor: this.state.bgColor }}
         // onClick={this.setColor}
         // onMouseUp={this.unSetColor}
         onClick={() => updateLabel(row, col)}>
       </circle>
-      <text className='type' x={col * radius * 2} y={row * radius * 2 + topMargin}>
+      <text className='type'
+        x={col * radius * 2 + radius}
+        y={row * radius * 2 + topMargin + radius}>
         {label}
       </text>
     </g>);
   }
-
-  /*
-  render() {
-    const property = this.checkNode(this.props.label);
-
-    return (<div className={`node ${property}`}
-      // style={{ backgroundColor: this.state.bgColor }}
-      // onClick={this.setColor}
-      // onMouseUp={this.unSetColor}
-      onClick={() => this.props.updateLabel(this.props.row, this.props.col)}>
-      <div className = 'type'>
-        {this.props.label}
-      </div>
-    </div>);
-  }
-  */
 }

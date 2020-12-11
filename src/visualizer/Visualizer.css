@@ -1,16 +1,26 @@
- .grid {
-   position: flex;
-   margin: auto;
-   justify-content: center;
-   min-width: 800px;
- }
+.grid {
+  position: flex;
+  margin: auto;
+  min-width: 800px;
+}
 
- .button {
-   background-color: black;
-   text-align: center;
-   width: 90px;
-   padding: 10px;
-   border-radius: 10px;
-   margin: auto;
-   margin-bottom: 5%;
- }
+.topbar {
+  max-width: 500px;
+  display: flex;
+  padding-bottom: 50px;
+  margin: auto;
+  justify-content: center;
+}
+
+.button {
+  background-color: black;
+  text-align: center;
+  padding: 20px;
+  border-radius: 20px;
+  margin: auto;
+  display: inline;
+}
+
+.nodes {
+  border-style: dotted;
+}
