@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Node from './node/Node';
+import Edge from './edge/Edge';
 
 import './Visualizer.css';
 
@@ -68,7 +69,6 @@ export default class Visualizer extends Component {
       if (newProb <= 1) newEdges[key] = [val];
     }
 
-    console.log(newEdges);
     this.setState({ edges: newEdges });
   }
 
@@ -129,47 +129,24 @@ export default class Visualizer extends Component {
     this.setState({ nodes: this.updateRender() });
   }
 
-  /*
-    SVG experimenting 
-
-    <g>
-      <path class="edgepath" d="M 20 20 L 5 5" marker-end='url(#head)'
-        stroke-width='2'></path>
-      <text x="20" y="20" class="edgelabel" transform="rotate(30 20,40)">I love SVG</text>
-    </g>
-
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
-          markerWidth="6" markerHeight="6"
-          orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" />
-        </marker>
-      </defs>
-      <g>
-        <path
-          id='arrow-line'
-          marker-end='url(#arrow)'
-          stroke-width='1'
-          fill='none' stroke='black'
-          d='M 0 20 L 80 20'
-        />
-        <path
-          id='arrow-line'
-          marker-end='url(#arrow)'
-          stroke-width='1'
-          fill='none' stroke='black'
-          d='M 80 40 L 0 40'
-        />
-        <text x="40" y="20" class="edgelabel">
-          Testing
-        </text>
-      </g>
-    </svg>
-  */
+  // converts edges map to edges list
+  // {"row1,col1" : ["row2,col2,prob", ...], ...} 
+  // => [[row1,col1,row2,col2,prob], [row1,col1,...]]
+  edgesToList(edges) {
+    const edgesList = [];
+    for (var key in edges) {
+      for (let val of edges[key]) {
+        var combo = key + "," + val;
+        var comboSplit = combo.split(",");
+        edgesList.push(comboSplit.map((elem) => parseFloat(elem)));
+      }
+    }
+    return edgesList;
+  }
 
   render() {
-    const { nodes } = this.state;
+    const { nodes, edges } = this.state;
+    const edgesList = this.edgesToList(edges);
 
     return (
       <div className="grid">
@@ -181,17 +158,9 @@ export default class Visualizer extends Component {
             ${2 * this.radius * (this.numCols)} 
             ${2 * this.radius * (this.numRows)}`}
             xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
-                markerWidth="20" markerHeight="20"
-                orient="auto-start-reverse">
-                <path d="M 0 0 L 10 5 L 0 10 z" />
-              </marker>
-            </defs>
-
-            {nodes.map((row, rowIdx) => {
+            {nodes.map((row, rowId) => {
               return (
-                <g key={rowIdx}>
+                <g key={rowId}>
                   {row.map((node) => {
                     const { row, col, label } = node;
                     return (
@@ -208,15 +177,20 @@ export default class Visualizer extends Component {
                 </g>
               );
             })}
-            <path
-              id='arrow-line'
-              marker-end='url(#arrow)'
-              stroke-width='1'
-              fill='none' stroke='black'
-              d='M 40 80 L 200 160'
-            />
-          </svg>
 
+            {edgesList.map((edge, edgeId) => {
+              return (
+                <Edge key={{ edgeId }}
+                  row1={edge[0]}
+                  col1={edge[1]}
+                  row2={edge[2]}
+                  col2={edge[3]}
+                  prob={edge[4]}
+                  radius = {this.radius}>
+                </Edge>
+              )
+            })}
+          </svg>
         </div>
       </div>
     )
