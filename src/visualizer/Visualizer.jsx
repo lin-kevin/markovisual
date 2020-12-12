@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 import Node from './node/Node';
 import Edge from './edge/Edge';
 
@@ -14,7 +15,7 @@ export default class Visualizer extends Component {
     this.state = {
       nodes: [], // (row, col, label, size)
       edges: new Map(), // "row1,col1" : ["row2,col2,prob", ...]
-      labels: []
+      labels: new Map()
     };
   }
 
@@ -33,44 +34,57 @@ export default class Visualizer extends Component {
 
   // add edge between two states 
   addEdge() {
-    const newRow1 = parseInt(prompt("Row 1: ")); // improve
-    const newCol1 = parseInt(prompt("Col 1: ")); // improve
-    const label1 = this.grid[newRow1][newCol1];
-    if (label1 === null || label1.length === 0) {
-      alert("Cannot add edge to non-existent state");
-      return;
-    }
+    var labels = this.state.labels;
 
-    const newRow2 = parseInt(prompt("Row 2: ")); // improve
-    const newCol2 = parseInt(prompt("Col 2: ")); // improve
-    const label2 = this.grid[newRow2][newCol2];
-    if (label2 === null || label2.length === 0) {
-      alert("Cannot add edge to non-existent state");
-      return;
-    }
+    swal("Please enter your start state: ", {
+      content: "input",
+    }).then((start) => {
 
-    const newProb = parseFloat(prompt("Probability: "));
-    const key = newRow1.toString() + "," + newCol1.toString();
-    const val = newRow2.toString() + "," + newCol2.toString() + "," + newProb.toString();
-    var newEdges = this.state.edges;
-
-    if (key in newEdges) {
-      var totalProb = 0;
-      for (let i = 0; i < newEdges[key].length; i++) {
-        var triple = newEdges[key][i].split(",");
-        totalProb += parseFloat(triple[2]);
+      if (!(start in labels)) {
+        swal("ERROR", "Cannot add edge to non-existent state!", "error");
+        return;
       }
-      if (totalProb + newProb > 1) {
-        alert("Total probability out of state " + this.grid[newRow1][newCol1] + " may not exceed 1");
-        return; // improve
-      } else {
-        newEdges[key].push(val);
-      }
-    } else {
-      if (newProb <= 1) newEdges[key] = [val];
-    }
 
-    this.setState({ edges: newEdges });
+      swal("Please enter your end state: ", {
+        content: "input",
+      }).then((end) => {
+
+        if (!(end in labels)) {
+          swal("ERROR", "Cannot add edge to non-existent state!", "error");
+          return;
+        }
+
+        swal("Please enter the transition probability: ", {
+          content: "input",
+        }).then((prob) => {
+
+          const newProb = parseFloat(prob);
+          const [newRow1, newCol1] = labels[start];
+          const [newRow2, newCol2] = labels[end];
+          const key = newRow1.toString() + "," + newCol1.toString();
+          const val = newRow2.toString() + "," + newCol2.toString() + "," + newProb.toString();
+          var newEdges = this.state.edges;
+
+          if (key in newEdges) {
+            var totalProb = 0;
+            for (let i = 0; i < newEdges[key].length; i++) {
+              var triple = newEdges[key][i].split(",");
+              totalProb += parseFloat(triple[2]);
+            }
+            if (totalProb + newProb > 1) {
+              swal("ERROR", `Total probability out of state ${start} may not exceed 1`, "error");
+              return;
+            } else {
+              newEdges[key].push(val);
+            }
+          } else {
+            if (newProb <= 1) newEdges[key] = [val];
+          }
+
+          this.setState({ edges: newEdges });
+        })
+      })
+    });
   }
 
   // gray out node's neighbors
@@ -106,15 +120,29 @@ export default class Visualizer extends Component {
       }
       newRender.push(currRow);
     }
-    return newRender
+    return newRender;
   }
 
+  // add or update label to node
   updateLabel = (row, col) => {
-    console.log(row, col);
-    var newLabel = prompt("Please enter a new label: "); // improve
-    if (newLabel === null) newLabel = "";
-    this.grid[row][col] = newLabel;
-    this.setState({ nodes: this.updateRender() });
+    swal("Please enter a new label:", {
+      content: "input",
+    }).then((value) => {
+      var newLabels = this.state.labels;
+      var newLabel = value;
+      var oldLabel = this.grid[row][col];
+      if (newLabel === null || newLabel === "") return;
+      if (oldLabel !== null && oldLabel.length > 0) newLabels.delete(oldLabel);
+      if (newLabel in newLabels) {
+        swal("ERROR", "Each node must have a unique label!", "error");
+        return;
+      }
+      console.log(newLabel, oldLabel);
+      newLabels[newLabel] = [row, col];
+      console.log(newLabels);
+      this.grid[row][col] = newLabel;
+      this.setState({ nodes: this.updateRender(), labels: newLabels });
+    });
   }
 
   componentDidMount() {
