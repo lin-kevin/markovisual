@@ -211,6 +211,9 @@ export default class Visualizer extends Component {
   }
 
   randomWalk() {
+    swal("ERROR", "Not yet implemented", "error");
+    return;
+    /*
     var edgeMatrix = this.edgesToMatrix(this.state.edges);
     for (let row of edgeMatrix) {
       if (Math.sum(row) !== 1) {
@@ -218,6 +221,7 @@ export default class Visualizer extends Component {
         return;
       }
     }
+    */
   }
 
   componentDidMount() {
