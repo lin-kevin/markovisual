@@ -5,21 +5,37 @@
 }
 
 .topbar {
-  max-width: 550px;
+  max-width: 450px;
   display: flex;
   padding-bottom: 50px;
   margin: auto;
   justify-content: center;
+  margin-bottom: -10px;
 }
 
-.button {
+button {
   font-family: 'Lato', sans-serif;
-  background-color: black;
   text-align: center;
-  padding: 20px;
-  border-radius: 20px;
+  padding: 15px;
+  border-radius: 15px;
+  border: none;
   margin: auto;
   display: inline;
+  background-color: #1c0840;
+  color: #aaa;
+  outline:none;
+}
+
+button:hover {
+  background-color: #080d4a;
+}
+
+.subtitle {
+  height: 40px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 10px;
+  justify-content: center;
 }
 
 .nodes {

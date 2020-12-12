@@ -15,10 +15,17 @@ export default class Visualizer extends Component {
     this.state = {
       nodes: [], // (row, col, label, size)
       edges: new Map(), // "row1,col1" : ["row2,col2,prob", ...]
-      labels: new Map()
+      labels: new Map(),
+      definitions: false,
+      subtitle: " ",
     };
   }
 
+  toggleDefinitions() {
+    if (this.state.definitions) {
+      this.setState({ definitions: false, subtitle: "" });
+    } else this.setState({ definitions: true, subtitle: "Hover over a component to see its formal definition" });
+  }
   // generate default grid
   generateGrid() {
     let newgrid = [];
@@ -35,11 +42,9 @@ export default class Visualizer extends Component {
   // add edge between two states 
   addEdge() {
     var labels = this.state.labels;
-
     swal("Please enter your start state: ", {
       content: "input",
     }).then((start) => {
-
       if (!(start in labels)) {
         swal("ERROR", "Cannot add edge to non-existent state!", "error");
         return;
@@ -48,7 +53,6 @@ export default class Visualizer extends Component {
       swal("Please enter your end state: ", {
         content: "input",
       }).then((end) => {
-
         if (!(end in labels)) {
           swal("ERROR", "Cannot add edge to non-existent state!", "error");
           return;
@@ -57,7 +61,6 @@ export default class Visualizer extends Component {
         swal("Please enter the transition probability: ", {
           content: "input",
         }).then((prob) => {
-
           const newProb = parseFloat(prob);
           const [newRow1, newCol1] = labels[start];
           const [newRow2, newCol2] = labels[end];
@@ -145,15 +148,10 @@ export default class Visualizer extends Component {
     });
   }
 
-  componentDidMount() {
-    this.generateGrid();
-    this.setState({ nodes: this.updateRender() });
-  }
-
   // converts edges map to edges list
-  // {"row1,col1" : ["row2,col2,prob", ...], ...} 
-  // => [[row1,col1,row2,col2,prob], [row1,col1,...]]
   edgesToList(edges) {
+    // {"row1,col1" : ["row2,col2,prob", ...], ...} 
+    // => [[row1,col1,row2,col2,prob], [row1,col1,...]]
     const edgesList = [];
     for (var key in edges) {
       for (let val of edges[key]) {
@@ -165,6 +163,26 @@ export default class Visualizer extends Component {
     return edgesList;
   }
 
+  // converts 
+  edgesToMatrix(edges) {
+    return;
+  }
+
+  randomWalk() {
+    var edgeMatrix = this.edgesToMatrix(this.state.edges);
+    for (let row of edgeMatrix) {
+      if (Math.sum(row) !== 1) {
+        swal("ERROR", `Total probability out of state ${row} may not exceed 1`, "error");
+        return;
+      }
+    }
+  }
+
+  componentDidMount() {
+    this.generateGrid();
+    this.setState({ nodes: this.updateRender() });
+  }
+
   render() {
     const { nodes, edges } = this.state;
     const edgesList = this.edgesToList(edges);
@@ -172,12 +190,18 @@ export default class Visualizer extends Component {
     return (
       <div className="grid">
         <div className="topbar">
-          <div className="button">
+          <button onClick={() => this.toggleDefinitions()}>
             DEFINITIONS
-          </div>
-          <div className="button" onClick={() => this.addEdge()}>
+          </button>
+          <button onClick={() => this.randomWalk()}>
+            RANDOM WALK
+          </button>
+          <button onClick={() => this.addEdge()}>
             ADD EDGE
-          </div>
+          </button>
+        </div>
+        <div className="subtitle">
+          {this.state.subtitle}
         </div>
         <div className="nodes">
           <svg viewBox={`0 0
@@ -187,14 +211,12 @@ export default class Visualizer extends Component {
             {edgesList.map((edge, edgeId) => {
               return (
                 <Edge key={{ edgeId }}
-                  row1={edge[0]}
-                  col1={edge[1]}
-                  row2={edge[2]}
-                  col2={edge[3]}
-                  prob={edge[4]}
+                  row1={edge[0]} col1={edge[1]}
+                  row2={edge[2]} col2={edge[3]}
+                  prob={edge[4]} radius={this.radius}
                   label1={this.grid[edge[0]][edge[1]]}
                   label2={this.grid[edge[2]][edge[3]]}
-                  radius={this.radius}>
+                  definitions={this.state.definitions}>
                 </Edge>
               )
             })}
@@ -205,12 +227,11 @@ export default class Visualizer extends Component {
                     const { row, col, label } = node;
                     return (
                       <Node key={(row, col)}
-                        row={row}
-                        col={col}
+                        row={row} col={col}
                         radius={this.radius}
-                        label={label}
-                        grid={this.grid}
-                        updateLabel={this.updateLabel}>
+                        label={label} grid={this.grid}
+                        updateLabel={this.updateLabel}
+                        definitions={this.state.definitions}>
                       </Node>
                     );
                   })}

@@ -23,6 +23,12 @@ export default class Node extends Component {
     })
   }
 
+  displayDefinition(def, label) {
+    if (def && label.length > 0) {
+      alert(" ");
+    }
+  }
+
   checkNode(label) {
     if (this.props.label === null) return "invalid";
     else if (this.props.label === "") return "blank";
@@ -30,7 +36,7 @@ export default class Node extends Component {
   }
 
   render() {
-    const { row, col, radius, label, updateLabel } = this.props;
+    const { row, col, radius, label, definitions, updateLabel } = this.props;
     const property = this.checkNode(label);
     const topMargin = radius / 8;
     return (<g>
@@ -39,6 +45,7 @@ export default class Node extends Component {
         // style={{ backgroundColor: this.state.bgColor }}
         // onClick={this.setColor}
         // onMouseUp={this.unSetColor}
+        onMouseOver={() => this.displayDefinition(definitions, label)}
         onClick={() => updateLabel(row, col)}>
       </circle>
       <text className='type'
