@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Swal from 'sweetalert2';
 import swal from 'sweetalert';
 import Node from './node/Node';
 import Edge from './edge/Edge';
@@ -17,14 +18,55 @@ export default class Visualizer extends Component {
       edges: new Map(), // "row1,col1" : ["row2,col2,prob", ...]
       labels: new Map(),
       definitions: false,
-      subtitle: " ",
     };
   }
 
   toggleDefinitions() {
     if (this.state.definitions) {
       this.setState({ definitions: false, subtitle: "" });
-    } else this.setState({ definitions: true, subtitle: "Hover over a component to see its formal definition" });
+    } else {
+      Swal.fire({
+        title: 'MARKOV CHAIN',
+        icon: 'info',
+        html: '<div class = "align-left">' +
+          'A <i>Markov Chain</i> is a mathematical system that ' +
+          'represents memoryless transitions from one state to another ' +
+          'according to probabilistic rules. <br><br>' +
+          'In other words, the probability of transitioning to any particular state ' +
+          'is dependent solely on the current state and time elapsed. </div>',
+        showCloseButton: true,
+        confirmButtonText: 'Continue',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'MARKOV CHAIN (cont.)',
+            icon: 'info',
+            html: '<div class = "align-left">' +
+              'More formally, you may view Markov Chains as <i>directed graphs</i> ' +
+              'with V = {1, 2, ..., n} such that ' +
+              '<ul> <li> Each edge is labeled with a value (i.e. probability) in (0, 1] </li> ' +
+              '<li> Self-loops are allowed </li>' +
+              '<li> At each vertex, the probabilities on outgoing edges sum to 1 </li>' +
+              '<li> We usually assume the graph is strongly connected </li></ul></div>',
+            showCloseButton: true,
+            confirmButtonText: 'Continue',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: 'YOU GOT THE BASICS!',
+                icon: 'success',
+                html: '<div class = "align-left">' +
+                  'Have fun building and experimenting with Markov Chains of your own! ' +
+                  'Hover over any component to learn more about it. </div>',
+                showCloseButton: true,
+                confirmButtonText: 'Thanks',
+              })
+            }
+          })
+        }
+      })
+      this.setState({ definitions: true });
+    }
   }
   // generate default grid
   generateGrid() {
@@ -190,7 +232,8 @@ export default class Visualizer extends Component {
     return (
       <div className="grid">
         <div className="topbar">
-          <button onClick={() => this.toggleDefinitions()}>
+          <button style={this.state.definitions ? { backgroundColor: '#32084a' } : {}}
+            onClick={() => this.toggleDefinitions()}>
             DEFINITIONS
           </button>
           <button onClick={() => this.randomWalk()}>
@@ -199,9 +242,6 @@ export default class Visualizer extends Component {
           <button onClick={() => this.addEdge()}>
             ADD EDGE
           </button>
-        </div>
-        <div className="subtitle">
-          {this.state.subtitle}
         </div>
         <div className="nodes">
           <svg viewBox={`0 0
@@ -216,7 +256,7 @@ export default class Visualizer extends Component {
                   prob={edge[4]} radius={this.radius}
                   label1={this.grid[edge[0]][edge[1]]}
                   label2={this.grid[edge[2]][edge[3]]}
-                  definitions={this.state.definitions}>
+                  def={this.state.definitions}>
                 </Edge>
               )
             })}
@@ -231,7 +271,7 @@ export default class Visualizer extends Component {
                         radius={this.radius}
                         label={label} grid={this.grid}
                         updateLabel={this.updateLabel}
-                        definitions={this.state.definitions}>
+                        def={this.state.definitions}>
                       </Node>
                     );
                   })}
@@ -240,7 +280,7 @@ export default class Visualizer extends Component {
             })}
           </svg>
         </div>
-      </div>
+      </div >
     )
   }
 }

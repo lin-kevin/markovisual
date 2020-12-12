@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Swal from 'sweetalert2';
 
 import './Edge.css';
 
@@ -14,16 +15,43 @@ export default class Edge extends Component {
     return Math.sqrt(a * a + b * b);
   }
 
-  getAcos(row1, col1, row2, col2, radius) {
-    return Math.acos((col1 - col2) / this.getDistance(row1, col1, row2, col2, radius))
-  }
-
-  getAsin(row1, col1, row2, col2, radius) {
-    return Math.asin((row1 - row2) / this.getDistance(row1, col1, row2, col2, radius))
+  displayDefinition(def) {
+    if (def) {
+      Swal.fire({
+        title: 'TRANSITION PROBABILITY',
+        icon: 'info',
+        html: '<div class = "align-left">' +
+          'Each of these represents the probability of going from one state to another. ' +
+          'Recall that the total probability exiting any state must be equal to 1. ' +
+          'You will generally see transition probabilities for every Markov Chain represented in a ...</div>',
+        showCloseButton: true,
+        confirmButtonText: 'Continue',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'TRANSITION MATRIX',
+            icon: 'info',
+            html: '(insert image & explanation)',
+            showCloseButton: true,
+            confirmButtonText: 'Continue',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: 'DO A RANDOM WALK',
+                icon: 'success',
+                html: '(insert gif & explanation)',
+                showCloseButton: true,
+                confirmButtonText: 'Thanks!',
+              })
+            }
+          })
+        }
+      })
+    }
   }
 
   render() {
-    const { row1, col1, label1, row2, col2, label2, radius, prob } = this.props;
+    const { row1, col1, label1, row2, col2, label2, radius, prob, def } = this.props;
     const d = this.getDistance(row1, col1, row2, col2, radius);
     const x1 = 2 * radius * col1 + radius
     const x2 = 2 * radius * col2 + radius
@@ -34,11 +62,8 @@ export default class Edge extends Component {
     console.log(x1, y1, x2, y2, xOff, yOff);
 
     return (
-      <svg>
-        <path
-          id='arrow-line'
-          strokeWidth='1'
-          fill='none' stroke='black'
+      <svg onMouseOver={() => this.displayDefinition(def)}>
+        <path strokeWidth='1' fill='none' stroke='black'
           d={`M ${x1}, ${y1} C ${x1 + xOff}, ${y1 - yOff}
                 ${x2 + xOff}, ${y2 - yOff} ${x2}, ${y2}`}
         />

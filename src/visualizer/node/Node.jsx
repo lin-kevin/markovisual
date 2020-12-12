@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
+import Swal from 'sweetalert2';
 
 import './Node.css';
 
 export default class Node extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      bgColor: ""
-    };
+    this.state = {};
   }
 
+  // style={{ backgroundColor: this.state.bgColor }}
+  // onClick={this.setColor}
+  // onMouseUp={this.unSetColor}
+
+  /*
   setColor = (e) => {
     const colors = ["red", "orange", "yellow", "green", "blue", "purple"];
     this.setState({
@@ -22,10 +26,30 @@ export default class Node extends Component {
       bgColor: ""
     })
   }
+  */
 
   displayDefinition(def, label) {
     if (def && label.length > 0) {
-      alert(" ");
+      Swal.fire({
+        title: 'STATE',
+        icon: 'info',
+        html: '<div class = "align-left">' +
+          'Together, these states form the <i>state space</i>, which is the set of all possible states. ' +
+          'These states can be anything: numbers, letters, symbols, weather conditions, stock performances, you name it! </div>',
+        showCloseButton: true,
+        confirmButtonText: 'Continue',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'GO EXPERIMENT!',
+            icon: 'success',
+            html: '<div class = "align-left">' +
+              'Feel free to simulate any real-world process you are interested in by changing the name of your sates! </div>',
+            showCloseButton: true,
+            confirmButtonText: 'Thanks!',
+          })
+        }
+      })
     }
   }
 
@@ -36,16 +60,13 @@ export default class Node extends Component {
   }
 
   render() {
-    const { row, col, radius, label, definitions, updateLabel } = this.props;
+    const { row, col, radius, label, def, updateLabel } = this.props;
     const property = this.checkNode(label);
     const topMargin = radius / 8;
     return (<g>
       <circle className={`node ${property}`} r={radius}
         cx={col * radius * 2 + radius} cy={row * radius * 2 + radius}
-        // style={{ backgroundColor: this.state.bgColor }}
-        // onClick={this.setColor}
-        // onMouseUp={this.unSetColor}
-        onMouseOver={() => this.displayDefinition(definitions, label)}
+        onMouseOver={() => this.displayDefinition(def, label)}
         onClick={() => updateLabel(row, col)}>
       </circle>
       <text className='type'
