@@ -9,13 +9,15 @@ export default class Edge extends Component {
     this.state = {};
   }
 
+  // get distance between two points 
   getDistance(row1, col1, row2, col2, radius) {
     var a = (row1 - row2) * 2 * radius;
     var b = (col1 - col2) * 2 * radius;
     return Math.sqrt(a * a + b * b);
   }
 
-  displayDefinition(def) {
+  // display definitions for edges 
+  displayDefinitions(def) {
     if (def) {
       Swal.fire({
         title: 'TRANSITION PROBABILITY',
@@ -62,7 +64,7 @@ export default class Edge extends Component {
     console.log(x1, y1, x2, y2, xOff, yOff);
 
     return (
-      <svg onMouseOver={() => this.displayDefinition(def)}>
+      <svg onMouseOver={() => this.displayDefinitions(def)}>
         <path strokeWidth='1' fill='none' stroke='black'
           d={`M ${x1}, ${y1} C ${x1 + xOff}, ${y1 - yOff}
                 ${x2 + xOff}, ${y2 - yOff} ${x2}, ${y2}`}

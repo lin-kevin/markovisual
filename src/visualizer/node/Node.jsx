@@ -28,7 +28,7 @@ export default class Node extends Component {
   }
   */
 
-  displayDefinition(def, label) {
+  displayDefinitions(def, label) {
     if (def && label.length > 0) {
       Swal.fire({
         title: 'STATE',
@@ -66,7 +66,7 @@ export default class Node extends Component {
     return (<g>
       <circle className={`node ${property}`} r={radius}
         cx={col * radius * 2 + radius} cy={row * radius * 2 + radius}
-        onMouseOver={() => this.displayDefinition(def, label)}
+        onMouseOver={() => this.displayDefinitions(def, label)}
         onClick={() => updateLabel(row, col)}>
       </circle>
       <text className='type'

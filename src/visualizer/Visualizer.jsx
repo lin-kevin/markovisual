@@ -16,11 +16,12 @@ export default class Visualizer extends Component {
     this.state = {
       nodes: [], // (row, col, label, size)
       edges: new Map(), // "row1,col1" : ["row2,col2,prob", ...]
-      labels: new Map(),
+      labels: new Map(), // "label": [row, col]
       definitions: false,
     };
   }
 
+  // show or hide definition mode 
   toggleDefinitions() {
     if (this.state.definitions) {
       this.setState({ definitions: false, subtitle: "" });
@@ -68,6 +69,7 @@ export default class Visualizer extends Component {
       this.setState({ definitions: true });
     }
   }
+
   // generate default grid
   generateGrid() {
     let newgrid = [];
@@ -190,7 +192,7 @@ export default class Visualizer extends Component {
     });
   }
 
-  // converts edges map to edges list
+  // convert edges map to edges list
   edgesToList(edges) {
     // {"row1,col1" : ["row2,col2,prob", ...], ...} 
     // => [[row1,col1,row2,col2,prob], [row1,col1,...]]
@@ -205,11 +207,12 @@ export default class Visualizer extends Component {
     return edgesList;
   }
 
-  // converts 
+  // convert edges to transition matrix 
   edgesToMatrix(edges) {
     return;
   }
 
+  // visualize random walk on markov chain
   randomWalk() {
     swal("ERROR", "Not yet implemented", "error");
     return;
@@ -224,6 +227,7 @@ export default class Visualizer extends Component {
     */
   }
 
+  // generate grid immediately 
   componentDidMount() {
     this.generateGrid();
     this.setState({ nodes: this.updateRender() });
